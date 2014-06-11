@@ -1,0 +1,81 @@
+<project name="IcedCoffeeScriptHook" basedir="." default="IcedCoffeeScriptHook.jar">
+
+	<property name="lib.dir" value="${basedir}/lib" />
+	<property name="java.src.dir" value="${basedir}/src" />
+	<property name="resources.dir" value="${basedir}/src/main/resources" />
+	<property name="generated.dir" value="${basedir}/src/main/generated" />
+
+	<property name="target.dir" value="${basedir}/target" />
+
+	<property environment="env" />
+
+	<path id="class.path">
+		<fileset dir="${lib.dir}">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+	<target name="clean">
+		<mkdir dir="${target.dir}" />
+		<delete includeemptydirs="true">
+			<fileset dir="${target.dir}">
+				<include name="**/*" />
+			</fileset>
+		</delete>
+		<mkdir dir="${target.dir}/classes" />
+	</target>
+
+	<target name="compile" description="Compile the sources"> <!-- depends="clean" -->
+		<echo message="Compiling sources... " />
+		<echo message="java.home = ${java.home}" />
+		<javac source="1.6" target="1.6" srcdir="${java.src.dir}" destdir="${target.dir}/classes" classpathref="class.path" debug="yes" />
+		<!-- Copy the needed .js files -->
+		<copy todir="${target.dir}/classes">
+			<fileset dir="${java.src.dir}">
+				<include name="**/*.js" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="IcedCoffeeScriptHook.jar" depends="compile" description="build a jar file from scratch">
+		<script language="javascript">
+		    project.setNewProperty( "current_target", self.getOwningTarget() );
+		</script>
+
+		<delete includeemptydirs="false">
+			<fileset dir="${basedir}/target">
+				<include name="**/*.jar" />
+			</fileset>
+		</delete>
+
+		<!--
+		<copy todir="${target.dir}/classes">
+			<fileset dir="${basedir}/resources">
+				<include name="**/*.*" />
+			</fileset>
+		</copy>
+		-->
+
+		<manifest file="${target.dir}/MANIFEST.MF">
+			<attribute name="Main-Class" value="be.vsko.orientdb.IcedCoffeeScriptHook" />
+		</manifest>
+		<jar destfile="${target.dir}/${current_target}" manifest="${target.dir}/MANIFEST.MF" basedir="${target.dir}/classes" />
+		<!--
+		<jar destfile="${target.dir}/${ant.project.name}.jar"
+			basedir="${target.dir}/classes" />
+		-->
+	</target>
+
+	<target name="Install" description="Copy the prviously compiled jar file to /home/ftilkin/java/orientdb-community-1.7.1/lib/">
+		<copy todir="/home/ftilkin/java/orientdb-community-1.7.1/lib">
+			<fileset dir="${target.dir}">
+				<include name="IcedCoffeeScriptHook.jar" />
+			</fileset>
+		</copy>
+		<copy todir="/home/ftilkin/java/orientdb-community-1.7.2/lib">
+			<fileset dir="${target.dir}">
+				<include name="IcedCoffeeScriptHook.jar" />
+			</fileset>
+		</copy>
+	</target>
+
+</project>
