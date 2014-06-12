@@ -325,14 +325,15 @@ public class IcedCoffeeScriptHook extends ODocumentHookAbstract implements OReco
 	        String compilerError = null;
 
 	        // create a string of the form ( par1, par2 ) that we will use to add a function definition around the bare icedcoffeescript code
-	        String parametersScriptPart = "(";
+	        String parametersScriptPart = "";
 	        for ( String p : parameters ) {
-	        	parametersScriptPart += ( parametersScriptPart.length() == 1 ? "" : ", " ) + p;
+	        	parametersScriptPart += ( parametersScriptPart.length() == 0 ? "(" : ", " ) + p;
 	        }
-	        parametersScriptPart += ")";
+	        if ( parametersScriptPart.length() > 0 )
+	        	parametersScriptPart += ")";
 
 	        //We need to define a coffeescript function with the given parameters
-	        String preparedScript = "functionbody = " + parametersScriptPart + " ->\n";
+	        String preparedScript = "functionbody = " + parametersScriptPart + " -->\n";
 
 	        //to make the code a part of this function body it has to be indented (we'll read line by line and add a tab character)
 	        BufferedReader reader = new BufferedReader( new StringReader( script ) );
@@ -349,12 +350,13 @@ public class IcedCoffeeScriptHook extends ODocumentHookAbstract implements OReco
 
 
 	        try {
+	        	System.out.println( "==== Trying to compile ==== \n\n" + preparedScript );
 	        	scriptEngine.put( "preparedScript", preparedScript );
 		        scriptEngine.eval(
 		        		//"var ics = script;" +
 		        		"var compiledScript = \"\";" +
 		        		"try { " +
-		        		"	compiledScript = CoffeeScript.compile( preparedScript );" +
+		        		"	compiledScript = LiveScript.compile( preparedScript );" +
 		        		"}" +
 		        		"catch (e) {" +
 		        		"	compiledScript = 'return \"[Compiler Error] ' + e + '\";';" +
@@ -380,7 +382,7 @@ public class IcedCoffeeScriptHook extends ODocumentHookAbstract implements OReco
 			        compiledScript = compiledScript.substring( 13, compiledScript.length() - 15 );
 			        System.out.println( compiledScript );
 			        System.out.println( "And we'll add a call to functionbody with the right prameters..." );
-			        compiledScript += "\n\n" + "return functionbody" + parametersScriptPart + ";";
+			        compiledScript += "\n\n" + "return functionbody" + ( parametersScriptPart.length() > 0 ? parametersScriptPart : "()" ) + ";";
 			        System.out.println( compiledScript );
 		        }
 			} catch (ScriptException e) {

@@ -3,6 +3,9 @@ package be.vsko.orientdb;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -17,35 +20,36 @@ public class Test {
 	 */
 	public static void main(String[] args) throws FileNotFoundException, ScriptException {
 		//IcedCoffeeScriptHook icsHook = new IcedCoffeeScriptHook();
-		System.out.println( "IcedCoffeescript compiled = " + IcedCoffeeScriptHook.getCompiledLiveScriptFunctionBody( "1+1", null ) );
-
+//		System.out.println( "IcedCoffeescript compiled = " + IcedCoffeeScriptHook.getCompiledLiveScriptFunctionBody( "1+1", null ) );
+//
 		System.out.println( "Livescript compiled = " + IcedCoffeeScriptHook.getCompiledLiveScriptFunctionBody( "1+1", null ) );
+		System.out.println( "Livescript compiled = " + IcedCoffeeScriptHook.getCompiledLiveScriptFunctionBody( "1+a", Arrays.asList( new String[] { "a" } ) ) );
 
 
-//	    ScriptEngineManager scriptEngineManager = null;
-//		ScriptEngine scriptEngine  = null;
-//		if ( scriptEngineManager == null || scriptEngine == null ) {
-//			System.out.println( "IcedCoffeeScriptHook() CONSTRUCTOR: I guess this is the first time, so please have some patience while we initalize the javascript environment and the necessary compilers." );
-//
-//	        scriptEngineManager = new ScriptEngineManager();
-//	        scriptEngine = scriptEngineManager.getEngineByName( "JavaScript" );
-//
-//
-//	        String request = "Hello";
-//
-//	        scriptEngine.eval( "this.x = \"Hello\";" );
-//	        scriptEngine.put( "r", request );
-//
-//	        scriptEngine.eval( "r = r + \" 2nd Hello\";" );
-//
-//	        String result = (String) scriptEngine.eval( "r" );
-//
-//	        System.out.println( "Result = " + result );
-//
-//	        //scriptEngine.eval( "java.lang.System.out.println( \"javascript result = \" + this.x + \" \" + typeof this.x );" );
-//
-//	        //requireJavaScriptResource( "livescript.js", scriptEngine );
-//	    }
+	    ScriptEngineManager scriptEngineManager = null;
+		ScriptEngine scriptEngine  = null;
+		if ( scriptEngineManager == null || scriptEngine == null ) {
+			System.out.println( "IcedCoffeeScriptHook() CONSTRUCTOR: I guess this is the first time, so please have some patience while we initalize the javascript environment and the necessary compilers." );
+
+	        scriptEngineManager = new ScriptEngineManager();
+	        scriptEngine = scriptEngineManager.getEngineByName( "JavaScript" );
+
+	        String request = "Hello";
+
+	        scriptEngine.eval( "this.x = \"Hello\";" );
+	        scriptEngine.put( "r", request );
+
+	        scriptEngine.eval( "r = r + ' 2nd Hello';" );
+	        //scriptEngine.eval( "r.concat( new java.lang.String( \" 2nd Hello\" ) );" );
+
+	        String result = (String) scriptEngine.eval( "r" );
+
+	        System.out.println( "Request = " + request + " Result = " + result );
+
+	        //scriptEngine.eval( "java.lang.System.out.println( \"javascript result = \" + this.x + \" \" + typeof this.x );" );
+
+	        //requireJavaScriptResource( "livescript.js", scriptEngine );
+	    }
 
 	}
 
